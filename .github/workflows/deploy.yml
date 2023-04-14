@@ -18,7 +18,7 @@ on:
 
 jobs:
   deploy:
-    name: deploy ${{ inputs.cluster }}
+    name: ${{ inputs.cluster }}
     runs-on: ubuntu-lastest
     permissions:
       contents: read
@@ -31,6 +31,7 @@ jobs:
           team: aap
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+      - run: echo "deploying image ${{ steps.login.outputs.registry }}/${{ github.event.repository.name }}:${{ github.sha }}"
       - uses: nais/deploy/actions/deploy@v1
         env:
           PRINT_PAYLOAD: true
