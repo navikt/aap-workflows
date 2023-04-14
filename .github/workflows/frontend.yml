@@ -1,3 +1,4 @@
+name: frontend
 on: 
   workflow_call:
   
