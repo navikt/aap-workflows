@@ -8,10 +8,12 @@ on:
         default: "AAP"
     secrets: 
       hemmelig:
-        required: true
+        required: false
   
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
     - run: echo ${{inputs.navn}}
+    - run: echo ${{secrets.MY_SECRET_NAME}}
+    - run: echo ${{secrets.hemmelig}}
