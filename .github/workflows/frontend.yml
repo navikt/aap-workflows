@@ -13,4 +13,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - run: echo ${{inputs.navn}}
-    - run: echo ${{secrets.MY_SECRET_NAME}}
+    - run: echo ${{secrets.AAP_TEST_SECRET}}
