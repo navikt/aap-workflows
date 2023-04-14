@@ -1,0 +1,19 @@
+name: test
+
+on: push
+
+jobs:
+  call-workflow:
+    uses: navikt/aap-workflows/.github/workflows/frontend/frontend.yml@main
+
+  call-workflow-with-inputs:
+    uses: navikt/aap-workflows/.github/workflows/frontend/frontend.yml@main
+    with:
+      navn: Dette er en verdi
+
+  call-workflow-with-inherited-secrets:
+      uses: navikt/aap-workflows/.github/workflows/frontend/frontend.yml@main
+      secrets: inherit
+
+
+
