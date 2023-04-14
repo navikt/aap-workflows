@@ -3,10 +3,8 @@ on:
     inputs:
       cluster:
         required: true
-        type: choice
-        options:
-          - dev-gcp
-          - prod-gcp
+        type: string
+        description: e.g. dev-gcp
       manifest:
         required: false
         type: string
@@ -26,7 +24,7 @@ jobs:
   deploy:
     name: deploy ${{ inputs.cluster }}
     runs-on: ubuntu-lastest
-    permissiong:
+    permissions:
       contents: read
       id-token: write
     steps:
