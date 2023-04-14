@@ -1,6 +1,11 @@
 name: frontend
 on: 
   workflow_call:
+    inputs:
+      navn: 
+        required: true
+        type: string
+        default: "AAP"
   
 jobs:
   test:
