@@ -3,7 +3,7 @@ on:
   workflow_call:
     inputs:
       navn: 
-        required: true
+        required: false
         type: string
         default: "AAP"
   
