@@ -15,10 +15,6 @@ on:
         type: string
         default: .nais/dev.yml
         description: yml/json with environment variables
-      image:
-        required: true
-        type: string
-        description: GAR image
 
 jobs:
   deploy:
@@ -42,4 +38,4 @@ jobs:
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.manifest }}
           VARS: ${{ inputs.vars }}
-          VAR: image=${{ image }}
+          VAR: image= ${{ steps.login.outputs.registry }}/${{ github.event.repository.name }}:${{ github.sha }}
