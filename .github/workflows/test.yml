@@ -4,6 +4,10 @@ on:
   workflow_dispatch: 
   
 jobs:
-  call-workflow-passing-data:
+  call-workflow:
     uses: navikt/aap-workflows/.github/workflows/frontend.yml@main
+  call-workflow-with-inputs:
+    uses: navikt/aap-workflows/.github/workflows/frontend.yml@main
+    with:
+      navn: Dette er en verdi
   
