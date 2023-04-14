@@ -1,4 +1,5 @@
 name: frontend
+
 on: 
   workflow_call:
     inputs:
@@ -6,14 +7,10 @@ on:
         required: false
         type: string
         default: "AAP"
-    secrets: 
-      hemmelig:
-        required: false
-  
+        
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
     - run: echo ${{inputs.navn}}
     - run: echo ${{secrets.MY_SECRET_NAME}}
-    - run: echo ${{secrets.hemmelig}}
