@@ -5,14 +5,12 @@ on: push
 jobs:
   call-workflow:
     uses: navikt/aap-workflows/.github/workflows/frontend.yml@main
-    secrets:
-        hemmelig: ${{secrets.MY_SECRET_NAME}}
+        
   call-workflow-with-inputs:
     uses: navikt/aap-workflows/.github/workflows/frontend.yml@main
     with:
       navn: Dette er en verdi
-    secrets:
-      hemmelig: ${{secrets.MY_SECRET_NAME}}
+      
   call-workflow-with-inherited-secrets:
       uses: navikt/aap-workflows/.github/workflows/frontend.yml@main
       secrets: inherit
