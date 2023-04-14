@@ -20,6 +20,7 @@ on:
       image:
         required: true
         type: string
+        description: GAR image
 
 jobs:
   deploy:
