@@ -1,0 +1,8 @@
+name: test
+
+on: 
+  workflow_dispatch: 
+  
+jobs:
+  uses: navikt/aap-workflows/.github/workflows/frontend.yml@main
+  
