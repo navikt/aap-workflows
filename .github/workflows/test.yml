@@ -4,5 +4,6 @@ on:
   workflow_dispatch: 
   
 jobs:
-  uses: navikt/aap-workflows/.github/workflows/frontend.yml@main
+  call-workflow-passing-data:
+    uses: navikt/aap-workflows/.github/workflows/frontend.yml@main
   
