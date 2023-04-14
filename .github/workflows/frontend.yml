@@ -6,6 +6,9 @@ on:
         required: false
         type: string
         default: "AAP"
+    secrets: 
+      hemmelig:
+        required: true
   
 jobs:
   test:
