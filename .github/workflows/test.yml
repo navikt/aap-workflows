@@ -3,6 +3,10 @@ name: test
 on: push
   
 jobs:
+  normal-job:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "splendid awesome nice price"
   call-workflow:
     uses: navikt/aap-workflows/.github/workflows/frontend.yml@main
         
