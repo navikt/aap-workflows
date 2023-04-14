@@ -38,4 +38,4 @@ jobs:
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.manifest }}
           VARS: ${{ inputs.vars }}
-          VAR: image= ${{ steps.login.outputs.registry }}/${{ github.event.repository.name }}:${{ github.sha }}
+          VAR: image=${{ steps.login.outputs.registry }}/${{ github.event.repository.name }}:${{ github.sha }}
