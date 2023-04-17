@@ -1,4 +1,4 @@
-name: gradle
+name: Gradle
 
 on:
   workflow_call:

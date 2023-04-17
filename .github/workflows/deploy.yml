@@ -1,25 +1,27 @@
+name: Deploy
+
 on:
   workflow_call:
     inputs:
       cluster:
         required: true
         type: string
-        description: e.g. dev-gcp
-      vars:
+        description: https://docs.nais.io/clusters/gcp/
+      template:
         required: true
         type: string
         default: .nais/dev.yml
-        description: yml/json with environment variables. e.g. .nais/dev.yml,.nais/alert.yml
+        description: Template file of environments variables to be interpolated in the manifest.
       tag:
         required: false
         type: string
         default: ${{ github.sha }}
-        description: tag used in nais/docker-build-push
+        description: Git tag used when published to GAR (nais/docker-build-push)
       manifest:
         required: false
         type: string
         default: .nais/app.yml
-        description: NAIS Application resource (aka manifest)
+        description: NAIS Application resource manifest
 
 jobs:
   deploy:
