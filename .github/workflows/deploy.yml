@@ -41,6 +41,6 @@ jobs:
           PRINT_PAYLOAD: true
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: ${{ inputs.cluster }}
-          RESOURCE: ${{ inputs.manifest }}
-          VARS: ${{ inputs.vars }}
+          VARS: ${{ inputs.template }}
           VAR: image=${{ steps.login.outputs.registry }}/${{ github.event.repository.name }}:${{ inputs.tag }}
+          RESOURCE: ${{ inputs.manifest }}
