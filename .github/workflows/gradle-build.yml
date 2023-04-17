@@ -1,18 +1,6 @@
 name: Gradle
 
-on:
-  workflow_call:
-    inputs:
-#      gradle-args:
-#        required: false
-#        type: string
-#        default: test app:buildFatJar --continue --no-daemon
-#        description: Arguments for the Gradle, e.g. 'clean build'
-      require-successful-tests:
-        required: false
-        type: boolean
-        default: true
-        description: Whether or not to require successful tests before publishing to GAR
+on: [ workflow_call ]
 
 jobs:
   build:
@@ -34,8 +22,7 @@ jobs:
           arguments: test app:buildFatJar --continue --no-daemon
 
       - uses: dorny/test-reporter@v1.6.0
-        # 'if: always()' will include cancelled() and will omit the ability to cancel, hence 'if: success() || failure()'
-        if: (success() || failure()) && ${{ inputs.require-successful-tests }}
+        if: success() || failure()
         with:
           name: test
           path: "**/build/test-results/test/TEST-*.xml"
