@@ -8,12 +8,13 @@ on:
         type: boolean
         description: Auto merge pull requests from dependabot
 
+permissions:
+  contents: write
+  pull-requests: write
+  checks: write
+  
 jobs:
   build:
-    permissions:
-      contents: write
-      pull-requests: write
-      checks: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -38,5 +39,5 @@ jobs:
         if: ${{ github.actor == 'dependabot[bot]' }} && ${{ inputs.auto-merge }}
         run: gh pr merge --auto --merge "$PR_URL"
         env:
-          PR_URL: ${{github.event.pull_request.html_url}}
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
