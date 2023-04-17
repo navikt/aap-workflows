@@ -3,11 +3,11 @@ name: Gradle
 on:
   workflow_call:
     inputs:
-      gradle-args:
-        required: false
-        type: string
-        default: test app:buildFatJar --continue --no-daemon
-        description: Arguments for the Gradle, e.g. 'clean build'
+#      gradle-args:
+#        required: false
+#        type: string
+#        default: test app:buildFatJar --continue --no-daemon
+#        description: Arguments for the Gradle, e.g. 'clean build'
       require-successful-tests:
         required: false
         type: boolean
@@ -31,7 +31,7 @@ jobs:
 
       - uses: gradle/gradle-build-action@v2.4.1
         with:
-          arguments: ${{ inputs.args }}
+          arguments: test app:buildFatJar --continue --no-daemon
 
       - uses: dorny/test-reporter@v1.6.0
         # 'if: always()' will include cancelled() and will omit the ability to cancel, hence 'if: success() || failure()'
