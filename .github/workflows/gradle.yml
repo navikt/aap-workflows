@@ -10,7 +10,7 @@ on:
         description: Arguments for the Gradle, e.g. 'clean build'
       require-successful-tests:
         required: false
-        type: bool
+        type: boolean
         default: true
         description: Whether or not to require successful tests before publishing to GAR
 
