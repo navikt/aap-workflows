@@ -7,7 +7,7 @@ on:
         required: true
         type: string
         description: https://docs.nais.io/clusters/gcp/
-      template:
+      vars:
         required: true
         type: string
         description: Template file of environments variables to be interpolated in the manifest.
@@ -42,5 +42,5 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.manifest }}
-          VARS: ${{ inputs.template }}
+          VARS: ${{ inputs.vars }}
           VAR: image=${{ steps.login.outputs.registry }}/${{ github.event.repository.name }}:${{ inputs.tag }}
