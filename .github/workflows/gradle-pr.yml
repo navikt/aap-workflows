@@ -10,7 +10,6 @@ on:
     secrets:
       token:
         required: false
-        default: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   build:
