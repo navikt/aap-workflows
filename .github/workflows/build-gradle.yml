@@ -1,0 +1,43 @@
+on:
+  workflow_call:
+    inputs:
+      gradle-args:
+        required: false
+        type: string
+        default: test app:buildFatJar --continue --no-daemon
+        description: Arguments for the Gradle, e.g. 'clean build'
+
+jobs:
+  build:
+    permissions:
+      contents: read
+      id-token: write
+      checks: write
+      actions: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3.3.0
+      - uses: actions/setup-java@v3.11.0
+        with:
+          java-version: 19
+          distribution: 'temurin'
+
+      - uses: gradle/gradle-build-action@v2.4.1
+        with:
+          arguments: ${{ inputs.args }}
+
+      - uses: dorny/test-reporter@v1.6.0
+        # 'if: always()' will include cancelled() and will omit the ability to cancel, hence 'if: success() || failure()'
+        if: success() || failure()
+        with:
+          name: test
+          path: "**/build/test-results/test/TEST-*.xml"
+          reporter: java-junit
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: nais/docker-build-push@v0
+        with:
+          team: aap
+          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+          tag: ${{ github.sha }}

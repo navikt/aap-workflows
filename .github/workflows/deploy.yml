@@ -1,20 +1,25 @@
-on: 
+on:
   workflow_call:
     inputs:
       cluster:
         required: true
         type: string
         description: e.g. dev-gcp
+      vars:
+        required: true
+        type: string
+        default: .nais/dev.yml
+        description: yml/json with environment variables. e.g. .nais/dev.yml,.nais/alert.yml
+      tag:
+        required: false
+        type: string
+        default: ${{ github.sha }}
+        description: tag used in nais/docker-build-push
       manifest:
         required: false
         type: string
         default: .nais/app.yml
         description: NAIS Application resource (aka manifest)
-      vars:
-        required: false
-        type: string
-        default: .nais/dev.yml
-        description: yml/json with environment variables
 
 jobs:
   deploy:
@@ -37,4 +42,4 @@ jobs:
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.manifest }}
           VARS: ${{ inputs.vars }}
-          VAR: image=${{ steps.login.outputs.registry }}/${{ github.event.repository.name }}:${{ github.sha }}
+          VAR: image=${{ steps.login.outputs.registry }}/${{ github.event.repository.name }}:${{ inputs.tag }}
