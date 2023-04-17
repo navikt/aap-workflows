@@ -10,7 +10,6 @@ on:
       template:
         required: true
         type: string
-        default: .nais/dev.yml
         description: Template file of environments variables to be interpolated in the manifest.
       tag:
         required: false
