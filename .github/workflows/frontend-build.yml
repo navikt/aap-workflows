@@ -11,7 +11,6 @@ on:
     secrets:
       NODE_AUTH_TOKEN:
         required: true
-        type: string
         description: Auth token
 
 env:
@@ -19,9 +18,9 @@ env:
 jobs:
   build:
     name: build
-      runs-on: "ubuntu-latest"
-      steps:
-        - run: echo "hello pello"
+    runs-on: "ubuntu-latest"
+    steps:
+      - run: echo "hello pello"
 #      outputs:
 #        image: ${{ env.IMAGE }}
 #      permissions:
