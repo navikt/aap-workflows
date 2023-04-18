@@ -2,13 +2,11 @@ name: Pull Request
 
 on: workflow_call
 
-permissions:
-  contents: write
-  pull-requests: write
-  checks: write
-
 jobs:
   build:
+    permissions:
+      pull-requests: write
+      checks: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -29,7 +27,13 @@ jobs:
           reporter: java-junit
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - if: ${{ github.actor == 'dependabot[bot]' }}
+  merge:
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    runs-on: ubuntu-lastest
+    needs: build
+    permissions:
+      contents: write
+    steps:
         run: gh pr merge --auto --merge "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
