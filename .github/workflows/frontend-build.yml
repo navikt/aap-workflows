@@ -11,8 +11,8 @@ on:
     secrets:
       NODE_AUTH_TOKEN:
         required: true
-          type: string
-          description: Auth token
+        type: string
+        description: Auth token
 
 env:
   IMAGE: ${{ inputs.image }}
