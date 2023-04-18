@@ -19,15 +19,13 @@ jobs:
   build:
     name: build
     runs-on: "ubuntu-latest"
-    steps:
-      - run: echo "hello pello"
-      outputs:
+    outputs:
         image: ${{ env.IMAGE }}
-      permissions:
+    permissions:
         contents: "read"
         id-token: "write"
         packages: "write"
-      env:
+    env:
         NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
     steps:
       - uses: "actions/checkout@v3"
