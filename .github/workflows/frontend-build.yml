@@ -63,9 +63,9 @@ jobs:
       - name: Bygg server(yarn run build)
         run: yarn run build
         working-directory: server
-      - name: Install Playwright with Chromium browser
-        run: npx playwright install --with-deps chromium
       - name: Run playwright tests
-        run: yarn playwright test
+        uses: navikt/aap-workflows/.github/workflows/playwright.yml@main
+
+
 
 
