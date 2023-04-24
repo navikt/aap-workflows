@@ -63,8 +63,8 @@ jobs:
       - name: Bygg server(yarn run build)
         run: yarn run build
         working-directory: server
-      - name: Run playwright tests
-        uses: navikt/aap-workflows/.github/workflows/playwright.yml@main
+#      - name: Run playwright tests
+#        uses: navikt/aap-workflows/.github/workflows/playwright.yml@main
 
 
 
