@@ -21,6 +21,11 @@ on:
         type: string
         default: .nais/app.yml
         description: NAIS Application resource manifest
+      imageSuffix:
+        required: false
+        type: string
+        default: ""
+        description: Suffix to append to the image name
 
 jobs:
   deploy:
@@ -43,4 +48,4 @@ jobs:
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.manifest }}
           VARS: ${{ inputs.vars }}
-          VAR: image=${{ steps.login.outputs.registry }}/${{ github.event.repository.name }}:${{ inputs.tag }}
+          VAR: image=${{ steps.login.outputs.registry }}/${{ github.event.repository.name }}${{ inputs.imageSuffix }}:${{ inputs.tag }}
