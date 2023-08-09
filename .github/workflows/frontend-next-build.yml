@@ -16,11 +16,6 @@ on:
         type: string
         description: App name
 
-    secrets:
-      NODE_AUTH_TOKEN:
-        required: true
-        description: Auth token
-
 jobs:
   build:
     name: build
