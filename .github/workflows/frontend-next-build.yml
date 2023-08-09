@@ -3,25 +3,28 @@ name: frontend-next-build
 on:
   workflow_call:
     inputs:
-      image:
+      cluster:
         required: true
         type: string
-        description: Image from ghcr
+        description: Cluster name
+      playwright:
+        required: true
+        type: boolean
+        description: Run playwright tests
+      appname:
+        required: true
+        type: string
+        description: App name
 
     secrets:
       NODE_AUTH_TOKEN:
         required: true
         description: Auth token
 
-env:
-  IMAGE: ${{ inputs.image }}
-
 jobs:
   build:
     name: build
     runs-on: ubuntu-latest
-    outputs:
-      image: ${{ env.IMAGE }}
     permissions:
       contents: read
       id-token: write
@@ -44,7 +47,31 @@ jobs:
       - name: install dependencies Yarn
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile
+      - name: Copy env-file # TODO: Se om vi kan finne en bedre løsning her på sikt
+        run: cp .nais/${{ inputs.cluster }}.env .env.local
       - name: run tests
         run: yarn test
       - name: run build
         run: yarn run build
+
+      - name: Upload static files to NAV CDN
+        uses: navikt/frontend/actions/cdn-upload/v1@main
+        with:
+          cdn-team-name: aap
+          source: ./.next/static
+          destination: /${{ inputs.appname }}/_next
+    
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+        if: ${{ inputs.playwright == 'true' }}
+
+      - name: Run Playwright tests
+        run: yarn playwright test
+        if: ${{ inputs.playwright == 'true' }}
+
+      - uses: nais/docker-build-push@v0
+        with:
+          team: aap
+          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+          tag: ${{ github.sha }}
