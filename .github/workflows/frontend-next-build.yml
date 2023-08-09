@@ -55,7 +55,7 @@ jobs:
           cdn-team-name: aap
           source: ./.next/static
           destination: /${{ inputs.appname }}/_next
-    
+
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
         if: ${{ inputs.playwright == 'true' }}
@@ -69,5 +69,5 @@ jobs:
           team: aap
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-          suffix: ${{ inputs.cluster }}
+          image_suffix: ${{ inputs.cluster }}
           tag: ${{ github.sha }}
