@@ -19,6 +19,10 @@ on:
         required: true
         type: string
         description: App name
+      appsecrets:
+        required: false
+        type: string
+        description: App secrets to be converted to .env.local (e.g. "MY_SECRET=secret"), can use multiline string
 
 jobs:
   build:
@@ -47,7 +51,10 @@ jobs:
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile
       - name: Copy env-file # TODO: Se om vi kan finne en bedre løsning her på sikt
-        run: cp .nais/${{ inputs.cluster }}.env .env.local
+        run: cp .nais/${{ inputs.cluster }}.env .env
+      - name: Copy secrets to env-file
+        run: echo  ${{ inputs.appsecrets }} >> .env.local
+        if: ${{ inputs.appsecrets != '' }}
       - name: run tests
         run: yarn test
       - name: run build
