@@ -53,7 +53,7 @@ jobs:
       - name: Copy env-file # TODO: Se om vi kan finne en bedre løsning her på sikt
         run: cp .nais/${{ inputs.cluster }}.env .env
       - name: Copy secrets to env-file
-        run: echo  ${{ inputs.appsecrets }} >> .env.local
+        run: echo  ${{inputs.appsecrets}}=${{secrets[inputs.appsecrets]}} >> .env.local
         if: ${{ inputs.appsecrets != '' }}
       - name: run tests
         run: yarn test
