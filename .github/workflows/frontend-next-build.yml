@@ -52,8 +52,8 @@ jobs:
         run: yarn install --frozen-lockfile
       - name: Copy env-file # TODO: Se om vi kan finne en bedre løsning her på sikt
         run: cp .nais/${{ inputs.cluster }}.env .env
-      - name: Copy secrets to env-file
-        run: echo  ${{inputs.appsecrets}}=${{secrets[inputs.appsecrets]}} >> .env.local
+      - name: Copy environment variables to env-file
+        run: echo  ${{inputs.appsecrets}}=${{secrets[inputs.appsecrets]}} >> .env
         if: ${{ inputs.appsecrets != '' }}
       - name: run tests
         run: yarn test
