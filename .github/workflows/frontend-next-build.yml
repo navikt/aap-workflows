@@ -58,7 +58,7 @@ jobs:
 
       - name: Upload static files to NAV CDN
         uses: navikt/frontend/actions/cdn-upload/v1@main
-        if: ${{ inputs.cdn == 'true' }}
+        if: ${{ inputs.cdn == true }}
         with:
           cdn-team-name: aap
           source: ./.next/static
