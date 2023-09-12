@@ -66,11 +66,11 @@ jobs:
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
-        if: ${{ inputs.playwright == 'true' }}
+        if: ${{ inputs.playwright == true }}
 
       - name: Run Playwright tests
         run: yarn playwright test
-        if: ${{ inputs.playwright == 'true' }}
+        if: ${{ inputs.playwright == true }}
 
       - uses: nais/docker-build-push@v0
         with:
