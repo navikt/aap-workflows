@@ -8,9 +8,10 @@ on:
         type: string
         description: https://docs.nais.io/clusters/gcp/
       vars:
-        required: true
+        required: false
         type: string
         description: Template file of environments variables to be interpolated in the manifest.
+        default: ""
       tag:
         required: false
         type: string
