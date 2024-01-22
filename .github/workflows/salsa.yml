@@ -10,7 +10,7 @@ on:
         default: 21
 
 jobs:
-  build:
+  publish:
     permissions:
       contents: read
       id-token: write
