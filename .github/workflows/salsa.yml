@@ -10,7 +10,7 @@ on:
         default: 21
 
 jobs:
-  publish:
+  salsa:
     permissions:
       contents: read
       id-token: write
