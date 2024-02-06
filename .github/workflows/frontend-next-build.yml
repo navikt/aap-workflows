@@ -45,7 +45,7 @@ jobs:
           key: ${{ runner.os }}-modules-${{ hashFiles('yarn.lock') }}
       - name: install dependencies Yarn
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
       - name: Copy env-file # TODO: Se om vi kan finne en bedre løsning her på sikt
         run: cp .nais/${{ inputs.cluster }}.env .env
       - name: Copy environment variables to env-file
