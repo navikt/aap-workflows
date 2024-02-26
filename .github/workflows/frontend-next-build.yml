@@ -30,6 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+      SKIP_YARN_COREPACK_CHECK: true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
