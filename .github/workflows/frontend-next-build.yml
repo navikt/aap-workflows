@@ -73,9 +73,22 @@ jobs:
           source: ./.next/static
           destination: /${{ inputs.appname }}/_next
 
+      - name: Get Playwright version
+        run: |
+          PLAYWRIGHT_VERSION=$(npm ls @playwright/test | grep @playwright | sed 's/.*@//')
+          echo "Playwright's Version: $PLAYWRIGHT_VERSION"
+          echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_ENV
+
+      - name: Cache playwright browsers
+        id: cache-playwright-browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-browsers-${{ env.PLAYWRIGHT_VERSION }}
+
       - name: Install Playwright Browsers
+        if: ${{ (inputs.playwright == true)  && (steps.cache-playwright-browsers.outputs.cache-hit != 'true' )}}
         run: npx playwright install --with-deps
-        if: ${{ inputs.playwright == true }}
 
       - name: Run Playwright tests
         run: yarn playwright test
