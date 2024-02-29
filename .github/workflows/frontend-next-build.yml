@@ -40,12 +40,6 @@ jobs:
           cache: yarn
       - name: Enable Corepack
         run: corepack enable
-      - name: Cache .next/cache
-        id: cache-next-cache
-        uses: actions/cache@v4
-        with:
-          path: .next/cache
-          key: ${{ runner.os }}-modules-${{ hashFiles('yarn.lock') }}-${{hashFiles('**/*.ts', '**/*.js', '**/*.env')}}
       - name: Cache client node_modules
         id: cache-node-modules
         uses: actions/cache@v4
@@ -88,7 +82,7 @@ jobs:
 
       - name: Install Playwright Browsers
         if: ${{ (inputs.playwright == true)  && (steps.cache-playwright-browsers.outputs.cache-hit != 'true' )}}
-        run: npx playwright install --with-deps
+        run: npx playwright install chromium --with-deps
 
       - name: Run Playwright tests
         run: yarn playwright test
