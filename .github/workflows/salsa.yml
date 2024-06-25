@@ -37,7 +37,7 @@ jobs:
 
       - run: ./gradlew test app:buildFatJar cyclonedxBom --continue --no-daemon
 
-      - uses: dorny/test-reporter@v1.8.0
+      - uses: dorny/test-reporter@v1.9.1
         if: success() || failure()
         with:
           name: test
