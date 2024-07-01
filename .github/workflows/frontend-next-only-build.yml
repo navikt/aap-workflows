@@ -1,0 +1,52 @@
+name: frontend-next-only-build
+
+on:
+  workflow_call:
+    inputs:
+      cluster:
+        required: true
+        type: string
+        description: Cluster name
+      appname:
+        required: true
+        type: string
+        description: App name
+      appsecrets:
+        required: false
+        type: string
+        description: App secrets to be converted to .env.local (e.g. "MY_SECRET=secret"), can use multiline string
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    env:
+      NPM_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+      SKIP_YARN_COREPACK_CHECK: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://npm.pkg.github.com
+          cache: yarn
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Cache client node_modules
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-modules-${{ hashFiles('yarn.lock') }}
+      - name: install dependencies Yarn
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: yarn install --immutable
+      - name: Copy env-file # TODO: Se om vi kan finne en bedre løsning her på sikt
+        run: cp .nais/${{ inputs.cluster }}.env .env
+      - name: Copy environment variables to env-file
+        run: echo  ${{inputs.appsecrets}}=${{secrets[inputs.appsecrets]}} >> .env.local
+        if: ${{ inputs.appsecrets != '' }}
+      - name: run tests
+        run: yarn test
+      - name: run build
+        run: yarn run build
