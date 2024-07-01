@@ -7,14 +7,6 @@ on:
         required: true
         type: string
         description: Cluster name
-      appname:
-        required: true
-        type: string
-        description: App name
-      appsecrets:
-        required: false
-        type: string
-        description: App secrets to be converted to .env.local (e.g. "MY_SECRET=secret"), can use multiline string
 
 jobs:
   build:
@@ -43,9 +35,6 @@ jobs:
         run: yarn install --immutable
       - name: Copy env-file # TODO: Se om vi kan finne en bedre løsning her på sikt
         run: cp .nais/${{ inputs.cluster }}.env .env
-      - name: Copy environment variables to env-file
-        run: echo  ${{inputs.appsecrets}}=${{secrets[inputs.appsecrets]}} >> .env.local
-        if: ${{ inputs.appsecrets != '' }}
       - name: run tests
         run: yarn test
       - name: run build
