@@ -54,6 +54,8 @@ jobs:
       - name: Copy environment variables to env-file
         run: echo  ${{inputs.appsecrets}}=${{secrets[inputs.appsecrets]}} >> .env.local
         if: ${{ inputs.appsecrets != '' }}
+      - name: typesjekking
+        run: yarn tsc
       - name: run tests
         run: yarn test
       - name: run build

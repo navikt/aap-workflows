@@ -35,6 +35,8 @@ jobs:
         run: yarn install --immutable
       - name: Copy env-file # TODO: Se om vi kan finne en bedre løsning her på sikt
         run: cp .nais/${{ inputs.cluster }}.env .env
+      - name: typecheck
+        run: yarn tsc
       - name: run tests
         run: yarn test
       - name: run build
