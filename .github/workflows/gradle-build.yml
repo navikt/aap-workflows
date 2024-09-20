@@ -34,7 +34,7 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v3 
         with:
-          # Generate and sumbit a dependency graph (transitive dependencies)
+          # Generate and submit a dependency graph (transitive dependencies)
           dependency-graph: generate-and-submit
         env:
           # Reports all cache entries saved/restored.

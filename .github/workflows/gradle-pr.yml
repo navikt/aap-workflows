@@ -44,6 +44,8 @@ jobs:
           GRADLE_BUILD_ACTION_CACHE_DEBUG_ENABLED: ${{ inputs.debug }}
 
       - run: ./gradlew test --continue --no-daemon
+        env:
+          GITHUB_PASSWORD: ${{ secrets.READER_TOKEN }}
 
       - uses: dorny/test-reporter@v1.9.1
         if: success() || failure()
