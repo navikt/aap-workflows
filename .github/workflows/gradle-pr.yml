@@ -43,7 +43,7 @@ jobs:
         env:
           # Reports all cache entries saved/restored.
           # Some parallell cache operations will be disabled when debug is enabled
-          # GRADLE_BUILD_ACTION_CACHE_DEBUG_ENABLED: ${{ inputs.debug }}
+          GRADLE_BUILD_ACTION_CACHE_DEBUG_ENABLED: ${{ inputs.debug }}
 
       - run: ./gradlew test --continue --no-daemon
         env:
