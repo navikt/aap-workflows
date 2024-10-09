@@ -42,7 +42,7 @@ jobs:
           # Some parallell cache operations will be disabled when debug is enabled
           GRADLE_BUILD_ACTION_CACHE_DEBUG_ENABLED: ${{ inputs.debug }}
 
-      - run: ./gradlew test app:buildFatJar --continue --no-daemon
+      - run: ./gradlew test app:buildFatJar --continue
         env:
           GITHUB_PASSWORD: ${{ secrets.READER_TOKEN }}
 
