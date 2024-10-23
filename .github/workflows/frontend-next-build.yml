@@ -98,6 +98,9 @@ jobs:
         run: yarn playwright test
         if: ${{ inputs.playwright == true }}
 
+      - name: Prune devdependencies
+        run: yarn remove $(cat package.json | jq -r '.devDependencies | keys | join(" ")')
+
       - uses: nais/docker-build-push@v0
         with:
           team: aap
