@@ -99,10 +99,7 @@ jobs:
         if: ${{ inputs.playwright == true }}
 
       - name: Prune devdependencies
-        run: |
-          DEV_DEPS=$(cat package.json | jq -r '.devDependencies | keys | join(" ")')
-          echo "Remove dev dependencies: $DEV_DEPS"
-          yarn remove $DEV_DEPS
+        run: yarn workspaces focus -A --production
 
       - uses: nais/docker-build-push@v0
         with:
