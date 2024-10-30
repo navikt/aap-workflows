@@ -23,7 +23,7 @@ jobs:
       - name: check diff
         id: check-diff
         run: |
-          DIFF_STATUS="$(cmp --silent $./my-repo/.github/dependabot.yml $./aap-workflows/.github/workflows/dependabot-frontend-next.yml; echo $?)"
+          DIFF_STATUS="$(cmp --silent ./my-repo/.github/dependabot.yml ./aap-workflows/.github/workflows/dependabot-frontend-next.yml; echo $?)"
           echo "Files differ: $DIFF_STATUS"
           echo "DIFF_STATUS=$DIFF_STATUS" >> $GITHUB_ENV
       - if: env.DIFF_STATUS != 0
