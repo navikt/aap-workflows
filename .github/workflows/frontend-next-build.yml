@@ -23,6 +23,10 @@ on:
         required: false
         type: string
         description: App secrets to be converted to .env.local (e.g. "MY_SECRET=secret"), can use multiline string
+      dynamicenv:
+        required: false
+        type: string
+        description: Env variables to be added to .env.local (e.g. "MY_SECRET=secret"). Can be created in build actions and passed, eg a timestamp of build time
 
 jobs:
   build:
@@ -60,6 +64,9 @@ jobs:
       - name: Copy environment variables to env-file
         run: echo  ${{inputs.appsecrets}}=${{secrets[inputs.appsecrets]}} >> .env.local
         if: ${{ inputs.appsecrets != '' }}
+      - name: Copy env passed in github actions (Do not use for secrets)
+        run: echo  ${{inputs.dynamicenv}} >> .env.local
+        if: ${{ inputs.dynamicenv != '' }}
       - name: typesjekking
         run: yarn tsc
       - name: run tests
