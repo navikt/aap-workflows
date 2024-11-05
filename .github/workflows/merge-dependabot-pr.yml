@@ -49,7 +49,7 @@ jobs:
             console.log("number of pulls: " + pulls.length)
             console.log("pulls: " + pulls)
 
-            const filtrert = pulls.data
+            const filtrert = pulls
                 .filter((it) => it.state == 'open')
                 .filter((it) => !it.head.repo.fork)
                 .filter((it) => it.labels.some((l) => l.name == LABEL))
