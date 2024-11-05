@@ -53,12 +53,22 @@ jobs:
             }
 
             const filtrert = pulls
-                .filter((it) => it.state == 'open')
-                .filter((it) => !it.head.repo.fork)
-                .filter((it) => it.user.login === 'dependabot[bot]')
+                .filter((it) => {
+                  console.log('state open:', it.state == 'open');
+                  return it.state == 'open';
+                })
+                .filter((it) => {
+                  console.log('is fork:', !it.head.repo.fork); 
+                  return !it.head.repo.fork;
+                 })
+                .filter((it) => {
+                  console.log('is dependabot user', it.user.login === 'dependabot[bot]');
+                  return it.user.login === 'dependabot[bot]';
+                })
                 .filter((it) => {
                     const prCreated = new Date(it.created_at)
                     const threeDays = 3 * 24 * 60 * 60 * 1000
+                    console.log('is too old:', prCreated.getTime() < Date.now() - threeDays)
                     return prCreated.getTime() < Date.now() - threeDays
                 })
                 .map((it) => {
