@@ -40,9 +40,10 @@ jobs:
             }
 
 
-            const pulls = await github.request('GET /repos/{owner}/{repo}/pulls', {
+            const pulls = await github.rest.pulls.list({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
+                state: 'open'
             })
             
             console.log("pulls: " + pulls.length)
