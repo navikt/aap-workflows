@@ -48,6 +48,7 @@ jobs:
             
             console.log("number of pulls: " + pulls.length)
 
+            const toDager = 2 * 60 * 60 * 24 * 1000 // 2 days
             const filtrert = pulls
                 .filter((it) => {
                   console.log('state open:', it.state == 'open');
@@ -62,10 +63,8 @@ jobs:
                   return it.user.login === 'dependabot[bot]';
                 })
                 .filter((it) => {
-                    const prCreated = new Date(it.created_at)
-                    const threeDays = 3 * 24 * 60 * 60 * 1000
-                    console.log('is too old:', prCreated.getTime() < Date.now() - threeDays)
-                    return prCreated.getTime() < Date.now() - threeDays
+                    console.log('is not too old:', new Date(it.created_at).getTime() < (Date.now() - toDager)))
+                    return new Date(it.created_at).getTime() < (Date.now() - toDager))
                 })
                 .map((it) => {
                     return {
