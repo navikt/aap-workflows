@@ -51,19 +51,15 @@ jobs:
             const toDager = 2 * 60 * 60 * 24 * 1000 // 2 days
             const filtrert = pulls
                 .filter((it) => {
-                  console.log('state open:', it.state == 'open');
                   return it.state == 'open';
                 })
                 .filter((it) => {
-                  console.log('is fork:', !it.head.repo.fork); 
                   return !it.head.repo.fork;
                  })
                 .filter((it) => {
-                  console.log('is dependabot user', it.user.login === 'dependabot[bot]');
                   return it.user.login === 'dependabot[bot]';
                 })
                 .filter((it) => {
-                    console.log('is not too old:', new Date(it.created_at).getTime() > (Date.now() - toDager))
                     return new Date(it.created_at).getTime() > (Date.now() - toDager)
                 })
                 .map((it) => {
