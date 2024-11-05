@@ -40,12 +40,13 @@ jobs:
             }
 
 
-            const pulls = await github.rest.pulls.list({
+            const pulls = await github.paginate(github.rest.pulls.list, {
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 state: 'open'
             })
             
+            console.log("number of pulls: " + pulls.length)
             console.log("pulls: " + pulls)
 
             const filtrert = pulls.data
