@@ -48,6 +48,9 @@ jobs:
             
             console.log("number of pulls: " + pulls.length)
             console.log("pulls: " + pulls)
+            for (apull of pulls) {
+              console.log(apull);
+            }
 
             const filtrert = pulls
                 .filter((it) => it.state == 'open')
