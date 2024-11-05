@@ -46,7 +46,7 @@ jobs:
                 state: 'open'
             })
             
-            console.log("pulls: " + pulls.length)
+            console.log("pulls: " + pulls)
 
             const filtrert = pulls.data
                 .filter((it) => it.state == 'open')
