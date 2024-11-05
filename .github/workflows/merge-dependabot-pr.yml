@@ -55,7 +55,7 @@ jobs:
             const filtrert = pulls
                 .filter((it) => it.state == 'open')
                 .filter((it) => !it.head.repo.fork)
-                .filter((it) => it.labels.some((l) => l.name == LABEL))
+                .filter((it) => it.user.login === 'dependabot[bot]')
                 .filter((it) => {
                     const prCreated = new Date(it.created_at)
                     const threeDays = 3 * 24 * 60 * 60 * 1000
