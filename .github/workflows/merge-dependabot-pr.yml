@@ -63,8 +63,8 @@ jobs:
                   return it.user.login === 'dependabot[bot]';
                 })
                 .filter((it) => {
-                    console.log('is not too old:', new Date(it.created_at).getTime() < (Date.now() - toDager)))
-                    return new Date(it.created_at).getTime() < (Date.now() - toDager))
+                    console.log('is not too old:', new Date(it.created_at).getTime() < (Date.now() - toDager))
+                    return new Date(it.created_at).getTime() < (Date.now() - toDager)
                 })
                 .map((it) => {
                     return {
