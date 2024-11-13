@@ -7,6 +7,10 @@ on:
         required: true
         type: string
         description: Cluster name
+      dynamicenv:
+        required: false
+        type: string
+        description: Env variables to be added to .env.local (e.g. "MY_SECRET=secret"). Can be created in build actions and passed, eg a timestamp of build time
 
 jobs:
   build:
@@ -41,6 +45,9 @@ jobs:
         run: yarn install --immutable
       - name: Copy env-file # TODO: Se om vi kan finne en bedre løsning her på sikt
         run: cp .nais/${{ inputs.cluster }}.env .env
+      - name: Copy env passed in github actions (Do not use for secrets)
+        run: echo  ${{inputs.dynamicenv}} >> .env.local
+        if: ${{ inputs.dynamicenv != '' }}
       - name: typecheck
         run: yarn tsc
       - name: run tests
