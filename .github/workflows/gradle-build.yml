@@ -89,6 +89,7 @@ jobs:
                     'artifactId': '${{steps.artifact-upload-step.outputs.artifact-id}}',
                     'appNavn': '${{ inputs.app-navn }}'
                 }
+              })
       - uses: dorny/test-reporter@v1.9.1
         if: success() || failure()
         with:
