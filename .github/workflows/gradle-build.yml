@@ -55,7 +55,28 @@ jobs:
       - run: ./gradlew test app:buildFatJar --continue
         env:
           GITHUB_PASSWORD: ${{ secrets.READER_TOKEN }}
-
+      - uses: actions/upload-artifact@v4
+        id: artifact-upload-step
+        if: ${{ inputs.publish-typescript == true }}
+        with:
+          name: openapi
+          path: ./openapi.json
+          overwrite: 'true'
+      - uses: actions/github-script@v7
+        if: ${{ inputs.publish-typescript == true }}
+        with:
+          github-token: ${{ secrets.GH_WF_TOKEN }}
+          script: |
+            const fs = require('fs');
+            await github.rest.actions.createWorkflowDispatch({
+                owner: 'navikt',
+                repo: 'aap-backend-typescript-types',
+                workflow_id: 'publish-and-release.yml',
+                ref: 'main',
+                inputs: {
+                    'artifactId': '${{steps.artifact-upload-step.outputs.artifact-id}}',
+                    'appNavn': '${{ inputs.app-navn }}'
+                }
       - uses: dorny/test-reporter@v1.9.1
         if: success() || failure()
         with:
@@ -84,26 +105,5 @@ jobs:
           build_args: |
             APP_NAME=${{ github.event.repository.name }}
       
-      - uses: actions/upload-artifact@v4
-        id: artifact-upload-step
-        if: ${{ inputs.publish-typescript == true }}
-        with:
-          name: openapi
-          path: ./openapi.json
-          overwrite: 'true'
-      - uses: actions/github-script@v7
-        if: ${{ inputs.publish-typescript == true }}
-        with:
-          github-token: ${{ secrets.GH_WF_TOKEN }}
-          script: |
-            const fs = require('fs');
-            await github.rest.actions.createWorkflowDispatch({
-                owner: 'navikt',
-                repo: 'aap-backend-typescript-types',
-                workflow_id: 'publish-and-release.yml',
-                ref: 'main',
-                inputs: {
-                    'artifactId': '${{steps.artifact-upload-step.outputs.artifact-id}}',
-                    'appNavn': '${{ inputs.app-navn }}'
-                }
+
 
