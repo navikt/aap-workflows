@@ -23,6 +23,11 @@ on:
         type: string
         description: app-navn
         default: ""
+      openapi-test-navn:
+        required: false
+        type: string
+        description: openapi-test-navn
+        default: "*ApiTest*.*openapi*"
 
 jobs:
   build:
@@ -55,8 +60,13 @@ jobs:
       - run: ./gradlew test app:buildFatJar --continue
         env:
           GITHUB_PASSWORD: ${{ secrets.READER_TOKEN }}
-      - name: Debug log
-        run: ls -la
+      - uses: gradle/actions/setup-gradle@v4
+        if: ${{ inputs.publish-typescript == true }}
+        with:
+          gradle-version: wrapper
+      - run: ./gradlew :app:cleanTest :app:test --tests '${{ inputs.openapi-test-navn }}' --continue --no-daemon --configuration-cache --stacktrace --info --no-build-cache
+        env:
+          GITHUB_PASSWORD: ${{ secrets.READER_TOKEN }}
       - uses: actions/upload-artifact@v4
         id: artifact-upload-step
         if: ${{ inputs.publish-typescript == true }}
