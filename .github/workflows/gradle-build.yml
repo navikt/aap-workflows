@@ -18,6 +18,11 @@ on:
         type: boolean
         description: publish typescript artifacts
         default: false
+      typescript-enums:
+        required: false
+        type: boolean
+        description: if publish typescript is true. use flag for enums
+        default: false
       app-navn:
         required: false
         type: string
@@ -86,7 +91,8 @@ jobs:
                 ref: 'main',
                 inputs: {
                     'artifactId': '${{steps.artifact-upload-step.outputs.artifact-id}}',
-                    'appNavn': '${{ inputs.app-navn }}'
+                    'appNavn': '${{ inputs.app-navn }}',
+                    'with-enums': ${{ inputs.typescript-enums }}
                 }
               })
       - uses: dorny/test-reporter@v1.9.1
