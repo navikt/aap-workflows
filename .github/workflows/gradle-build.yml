@@ -63,11 +63,7 @@ jobs:
       - run: ./gradlew test app:buildFatJar --continue
         env:
           GITHUB_PASSWORD: ${{ secrets.READER_TOKEN }}
-      - uses: gradle/actions/setup-gradle@v4
-        if: ${{ inputs.publish-typescript == true }}
-        with:
-          gradle-version: wrapper
-      - run: ./gradlew :app:cleanTest :app:test --tests '${{ inputs.openapi-test-navn }}' --continue --no-daemon --configuration-cache --stacktrace --info --no-build-cache
+      - run: ./gradlew :app:cleanTest :app:test --tests '${{ inputs.openapi-test-navn }}' --continue --configuration-cache --stacktrace --info --no-build-cache
         if: ${{ inputs.publish-typescript == true }}
         env:
           GITHUB_PASSWORD: ${{ secrets.READER_TOKEN }}
