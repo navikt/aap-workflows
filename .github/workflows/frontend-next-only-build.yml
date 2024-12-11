@@ -11,6 +11,11 @@ on:
         required: false
         type: string
         description: Env variables to be added to .env.local (e.g. "MY_SECRET=secret"). Can be created in build actions and passed, eg a timestamp of build time
+      playwright:
+        required: false
+        default: false
+        type: boolean
+        description: Run playwright tests
 
 jobs:
   build:
@@ -54,3 +59,9 @@ jobs:
         run: yarn test
       - name: run build
         run: yarn run build
+      - name: Install Playwright Browsers
+        if: ${{ inputs.playwright == true }}
+        run: npx playwright install chromium --with-deps
+      - name: Run Playwright tests
+        run: yarn playwright test
+        if: ${{ inputs.playwright == true }}
