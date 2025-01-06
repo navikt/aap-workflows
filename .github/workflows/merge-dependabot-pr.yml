@@ -51,15 +51,27 @@ jobs:
             const toDager = 2 * 60 * 60 * 24 * 1000 // 2 days
             const filtrert = pulls
                 .filter((it) => {
+                  if(it.state !== 'open'){
+                    console.log(`${it.number} - ${it.title}: filtered, not open`)
+                  }
                   return it.state == 'open';
                 })
                 .filter((it) => {
+                  if(it.head.repo.fork){
+                    console.log(`${it.number} - ${it.title}: filtered, is fork`)
+                  }
                   return !it.head.repo.fork;
                  })
                 .filter((it) => {
+                  if(it.user.login !== 'dependabot[bot]'){
+                    console.log(`${it.number} - ${it.title}: filtered, is not from dependabot`)
+                  }
                   return it.user.login === 'dependabot[bot]';
                 })
                 .filter((it) => {
+                    if(new Date(it.created_at).getTime() < (Date.now() - toDager)){
+                      console.log(`${it.number} - ${it.title}: filtered, older than two days`)
+                    }
                     return new Date(it.created_at).getTime() > (Date.now() - toDager)
                 })
                 .map((it) => {
@@ -94,6 +106,9 @@ jobs:
                     const [{ commit: lastCommit }] =
                         result.repository.pullRequest.commits.nodes
 
+                    if(lastCommit.statusCheckRollup?.state !== 'SUCCESS'){
+                      console.log(`${it.number} - ${it.title}: statusCheckRollup state from last commit is not SUCCESS`)
+                    }
                     return {
                         title: it.title,
                         number: it.number,
