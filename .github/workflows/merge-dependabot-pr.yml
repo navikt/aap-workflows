@@ -132,7 +132,7 @@ jobs:
                     })
             
                     console.log(`#${it.number}  ${it.title}`);
-                    console.log(`data: ${JSON.stringify(prdata.data}`);
+                    console.log(`data: ${JSON.stringify(prdata.data)}`);
                     console.log('');
                     return {
                         title: it.title,
