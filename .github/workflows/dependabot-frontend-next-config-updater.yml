@@ -31,11 +31,12 @@ jobs:
           cd my-repo
           git config --global user.email "aap-dependabot-updater@nav.no"
           git config --global user.name "AAP felles dependabot config sync"
-          git checkout -b "dependabot-config-update-$(date +"%Y%m%d%H%M%S")"
+          BRANCH_NAME="dependabot-config-update-$(date +"%Y%m%d%H%M%S")"
+          git checkout -b "$BRANCH_NAME" 
           cp -f ../aap-workflows/.github/workflows/dependabot-frontend-next.yml ./.github/dependabot.yml 
           git add .
           git commit -m "oppdatert dependabot config"
           git push origin HEAD
-          gh pr create --title ":arrow_up: Dependabot config" --body "Ny config hentet fra navikt/aap-workflows dependabot-frontend-next.yml"
+          gh pr create --head "$BRANCH_NAME" --title ":arrow_up: Dependabot config" --body "Ny config hentet fra navikt/aap-workflows dependabot-frontend-next.yml"
         env:
           GH_TOKEN: ${{ secrets.github_token }}
