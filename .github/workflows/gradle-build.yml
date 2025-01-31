@@ -33,6 +33,11 @@ on:
         type: string
         description: openapi-test-navn
         default: "*ApiTest*.*openapi*"
+      generate-openapi-command:
+        required: false
+        type: string
+        description: Gradle command to generate openapi.json
+        default: "gradle genererOpenApi"
 
 jobs:
   build:
@@ -64,7 +69,11 @@ jobs:
         env:
           GITHUB_PASSWORD: ${{ secrets.READER_TOKEN }}
       - run: ./gradlew :app:cleanTest :app:test --tests '${{ inputs.openapi-test-navn }}' --continue --configuration-cache --stacktrace --info --no-build-cache
-        if: ${{ inputs.publish-typescript == true }}
+        if: ${{ inputs.publish-typescript == true && !inputs.generate-openapi-command == '' }}
+        env:
+          GITHUB_PASSWORD: ${{ secrets.READER_TOKEN }}
+      - run: '${{ inputs.generate-openapi-command }}'
+        if: ${{ inputs.publish-typescript == true && !inputs.generate-openapi-command != '' }}
         env:
           GITHUB_PASSWORD: ${{ secrets.READER_TOKEN }}
       - uses: actions/upload-artifact@v4
