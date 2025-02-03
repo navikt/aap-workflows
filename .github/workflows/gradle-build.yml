@@ -37,7 +37,7 @@ on:
         required: false
         type: string
         description: Gradle command to generate openapi.json
-        default: "gradle genererOpenApi"
+        default: ""
 
 jobs:
   build:
