@@ -48,7 +48,5 @@ jobs:
       - uses: nais/docker-build-push@v0
         with:
           team: aap
-          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
           tag: ${{ github.sha }}
           byosbom: app/build/reports/bom.json
