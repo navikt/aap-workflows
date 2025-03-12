@@ -47,14 +47,6 @@ jobs:
       - name: install dependencies Yarn
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: yarn install --immutable
-#      - name: Copy env-file # TODO: Se om vi kan finne en bedre løsning her på sikt
-#        run: cp .nais/${{ inputs.cluster }}.env .env
-#      - name: Copy environment variables to env-file
-#        run: echo  ${{inputs.appsecrets}}=${{secrets[inputs.appsecrets]}} >> .env.local
-#        if: ${{ inputs.appsecrets != '' }}
-#      - name: Copy env passed in github actions (Do not use for secrets)
-#        run: echo  ${{inputs.dynamicenv}} >> .env.local
-#        if: ${{ inputs.dynamicenv != '' }}
       - name: typesjekking
         run: yarn tsc
       - name: run tests
