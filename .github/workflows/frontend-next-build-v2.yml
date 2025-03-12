@@ -11,6 +11,10 @@ on:
         required: true
         type: boolean
         description: Run playwright tests
+      environment:
+        required: true
+        type: string
+        description: NextJS environment (dev / prod)
       cdn:
         required: true
         type: boolean
@@ -52,7 +56,7 @@ jobs:
       - name: run tests
         run: yarn test
       - name: run build
-        run: yarn run build
+        run: NEXT_PUBLIC_ENVIRONMENT=${{ inputs.environment }} yarn run build
 
       - name: Upload static files to NAV CDN
         uses: nais/deploy/actions/cdn-upload/v2@master
