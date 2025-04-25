@@ -49,13 +49,22 @@ jobs:
         env:
           GITHUB_PASSWORD: ${{ secrets.READER_TOKEN }}
 
-      - uses: dorny/test-reporter@v1.9.1
+      - uses: dorny/test-reporter@v2
         if: success() || failure()
         with:
           name: test
           path: "**/build/test-results/test/TEST-*.xml"
           reporter: java-junit
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Store reports
+        if: failure()
+        uses: actions/upload-artifact@v4.4.0
+        with:
+          name: reports
+          path: |
+            **/build/reports/
+            **/build/test-results/
 
   merge:
     if: ${{ github.actor == 'dependabot[bot]' }}
