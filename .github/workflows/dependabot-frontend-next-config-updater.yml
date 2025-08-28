@@ -12,10 +12,10 @@ jobs:
       packages: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           path: ./my-repo
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           repository: navikt/aap-workflows
           path: ./aap-workflows
