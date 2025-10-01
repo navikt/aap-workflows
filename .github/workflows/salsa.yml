@@ -29,7 +29,7 @@ jobs:
           java-version: ${{ inputs.jdk }}
           distribution: 'temurin'
 
-      - uses: gradle/actions/setup-gradle@v4 
+      - uses: gradle/actions/setup-gradle@v5 
         env:
           # Reports all cache entries saved/restored.
           # Some parallell cache operations will be disabled when debug is enabled
