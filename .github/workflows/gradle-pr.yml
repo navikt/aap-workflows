@@ -1,11 +1,10 @@
 # A reusable workflow for pull-requests on gradle JVM projects.
-# Auto merges dependabot pull-requests
 #
 # Prerequisites:
 # - Minimum 1 junit test
 # - dependabot.yml with open-pull-requests-limit: 1
 #
-# Recomendations:
+# Recommendations:
 # Require `test` job (dorny/test-reporter) in a branch protection rule to main.
 
 name: Pull Request
@@ -16,8 +15,8 @@ on:
       jdk:
         required: false
         type: string
-        description: jdk version, e.g. 21
-        default: 21
+        description: jdk version
+        default: 25
       debug:
         required: false
         type: boolean
@@ -42,7 +41,7 @@ jobs:
           gradle-version: wrapper
         env:
           # Reports all cache entries saved/restored.
-          # Some parallell cache operations will be disabled when debug is enabled
+          # Some parallel cache operations will be disabled when debug is enabled
           GRADLE_BUILD_ACTION_CACHE_DEBUG_ENABLED: ${{ inputs.debug }}
 
       - run: ./gradlew test --continue
