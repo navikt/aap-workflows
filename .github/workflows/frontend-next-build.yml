@@ -33,7 +33,7 @@ jobs:
     name: build
     runs-on: ubuntu-latest
     env:
-      NPM_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+      NPM_AUTH_TOKEN: ${{ secrets.MIDLERTIDIG_READER_TOKEN_AAP }}
       SKIP_YARN_COREPACK_CHECK: true
     steps:
       - uses: actions/checkout@v6
