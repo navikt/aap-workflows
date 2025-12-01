@@ -129,6 +129,7 @@ jobs:
           path: |
             **/build/reports/
             **/build/test-results/
+            **/build/test-logs/
 
       - uses: nais/docker-build-push@v0
         env: # Workaround for rate limiting inntil denne er fikset: https://github.com/aquasecurity/trivy-action/issues/389
