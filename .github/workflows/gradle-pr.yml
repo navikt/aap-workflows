@@ -48,7 +48,7 @@ jobs:
         env:
           GITHUB_PASSWORD: ${{ secrets.READER_TOKEN }}
 
-      - uses: dorny/test-reporter@v2.3.0
+      - uses: dorny/test-reporter@v2.4.0
         if: success() || failure()
         with:
           name: test
