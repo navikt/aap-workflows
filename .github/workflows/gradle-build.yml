@@ -107,7 +107,7 @@ jobs:
                     'with-enums': ${{ inputs.typescript-enums }}
                 }
               })
-      - uses: dorny/test-reporter@v2.4.0
+      - uses: dorny/test-reporter@v2.5.0
         if: success() || failure()
         with:
           name: test
