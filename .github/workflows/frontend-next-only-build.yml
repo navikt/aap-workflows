@@ -16,6 +16,11 @@ on:
         default: false
         type: boolean
         description: Run playwright tests
+      linting:
+        required: false
+        default: false
+        type: boolean
+        description: Run linting
 
 jobs:
   build:
@@ -57,6 +62,9 @@ jobs:
         run: yarn tsc
       - name: run tests
         run: yarn test
+      - name: run linting
+        if: ${{ inputs.linting == true }}
+        run: yarn lint
       - name: run build
         run: yarn run build
       - name: Install Playwright Browsers
