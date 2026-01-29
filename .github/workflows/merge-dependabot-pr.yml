@@ -76,7 +76,7 @@ jobs:
                 })
                 .filter((it) => {
                     const isPatch = !!it.labels.find(label => label.name === "patch");
-                    if(!isPatch)){
+                    if(!isPatch){
                       console.log(`${it.number} - ${it.title}: filtered, could not find patch label`)
                     }
                     return isPatch;
