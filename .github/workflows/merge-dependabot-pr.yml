@@ -6,10 +6,14 @@ on:
         required: false
         default: "build-and-deploy.yml"
         type: string
-      label:
+      disable-dependabot-merge:
         required: false
-        default: "automerge"
-        type: string
+        default: false
+        type: boolean
+      disable-digestabot-merge:
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   merge-pullrequests:
@@ -19,14 +23,13 @@ jobs:
       - uses: actions/github-script@v8
         env:
           WORKFLOW_ID: ${{ inputs.workflow-id }}
-          LABEL: ${{ inputs.label }}
+          DISABLE_DEPENDABOT: ${{ inputs.disable-dependabot-merge }}
+          DISABLE_DIGESTABOT: ${{ inputs.disable-digestabot-merge }}
         with:
           script: |
-            const { WORKFLOW_ID } = process.env
-            const { LABEL } = process.env
+            const { WORKFLOW_ID, DISABLE_DEPENDABOT, DISABLE_DIGESTABOT } = process.env
             
             console.log("WORKFLOW_ID: " + WORKFLOW_ID)
-            console.log("LABEL: " + LABEL)
             
             const today = new Date();
             const julStart = new Date(today.getFullYear(), 11, 20);
@@ -63,10 +66,20 @@ jobs:
                   return !it.head.repo.fork;
                  })
                 .filter((it) => {
-                  if(it.user.login !== 'dependabot[bot]'){
-                    console.log(`${it.number} - ${it.title}: filtered, is not from dependabot`)
+                  const erDependabot = it.user.login === 'dependabot[bot]';
+                  const erDigestabot = it.user.login === 'github-actions[bot]' && it.labels.some(label => label.name === 'digestabot');
+                  if(!erDependabot && !erDigestabot){
+                    console.log(`${it.number} - ${it.title}: filtered, is not from dependabot or digestabot. erDependabot: ${erDependabot}, erDigestabot: ${erDigestabot}`)
+                  } else if(!digestabot){
+                    console.log(`${it.number} - ${it.title}: filtered, is not from digestabot`)
+                  } else if(DISABLE_DIGESTABOT){
+                    console.log(`${it.number} - ${it.title}: filtered, digestabot merge is disabled
+                    return false;
+                  } else if(DISABLE_DEPENDABOT){
+                    console.log(`${it.number} - ${it.title}: filtered, dependabot merge is disabled
+                    return false;
                   }
-                  return it.user.login === 'dependabot[bot]';
+                  return erDependabot || erDigestabot;
                 })
                 .filter((it) => {
                     if(new Date(it.created_at).getTime() < (Date.now() - toDager)){
