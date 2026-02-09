@@ -73,10 +73,10 @@ jobs:
                   const erDigestabot = it.user.login === 'github-actions[bot]' && it.labels.some(label => label.name === 'digestabot');
                   if(!erDependabot && !erDigestabot){
                     console.log(`${it.number} - ${it.title}: filtered, is not from dependabot or digestabot. erDependabot: ${erDependabot}, erDigestabot: ${erDigestabot}`)
-                  } else if(DISABLE_DIGESTABOT){
+                  } else if(erDigestabot && DISABLE_DIGESTABOT){
                     console.log(`${it.number} - ${it.title}: filtered, digestabot merge is disabled`)
                     return false;
-                  } else if(DISABLE_DEPENDABOT){
+                  } else if(erDependabot && DISABLE_DEPENDABOT){
                     console.log(`${it.number} - ${it.title}: filtered, dependabot merge is disabled`)
                     return false;
                   }
