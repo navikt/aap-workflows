@@ -30,6 +30,8 @@ jobs:
             const { WORKFLOW_ID, DISABLE_DEPENDABOT, DISABLE_DIGESTABOT } = process.env
             
             console.log("WORKFLOW_ID: " + WORKFLOW_ID)
+            console.log("DISABLE_DEPENDABOT: " + DISABLE_DEPENDABOT)
+            console.log("DISABLE_DIGESTABOT: " + DISABLE_DIGESTABOT)
             
             const today = new Date();
             const julStart = new Date(today.getFullYear(), 11, 20);
