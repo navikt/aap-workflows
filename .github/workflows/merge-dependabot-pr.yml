@@ -73,10 +73,10 @@ jobs:
                   } else if(!digestabot){
                     console.log(`${it.number} - ${it.title}: filtered, is not from digestabot`)
                   } else if(DISABLE_DIGESTABOT){
-                    console.log(`${it.number} - ${it.title}: filtered, digestabot merge is disabled
+                    console.log(`${it.number} - ${it.title}: filtered, digestabot merge is disabled`)
                     return false;
                   } else if(DISABLE_DEPENDABOT){
-                    console.log(`${it.number} - ${it.title}: filtered, dependabot merge is disabled
+                    console.log(`${it.number} - ${it.title}: filtered, dependabot merge is disabled`)
                     return false;
                   }
                   return erDependabot || erDigestabot;
