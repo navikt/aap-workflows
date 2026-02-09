@@ -27,8 +27,9 @@ jobs:
           DISABLE_DIGESTABOT: ${{ inputs.disable-digestabot-merge }}
         with:
           script: |
-            const { WORKFLOW_ID, DISABLE_DEPENDABOT, DISABLE_DIGESTABOT } = process.env
-            
+            const { WORKFLOW_ID  } = process.env
+            const DISABLE_DEPENDABOT = process.env.DISABLE_DEPENDABOT === 'true';
+            const DISABLE_DIGESTABOT = process.env.DISABLE_DIGESTABOT === 'true';
             console.log("WORKFLOW_ID: " + WORKFLOW_ID)
             console.log("DISABLE_DEPENDABOT: " + DISABLE_DEPENDABOT)
             console.log("DISABLE_DIGESTABOT: " + DISABLE_DIGESTABOT)
