@@ -88,11 +88,13 @@ jobs:
                     return new Date(it.created_at).getTime() > (Date.now() - toDager)
                 })
                 .filter((it) => {
+                    const erDependabot = it.user.login === 'dependabot[bot]';
                     const isPatch = !!it.labels.find(label => label.name === "patch");
-                    if(!isPatch){
-                      console.log(`${it.number} - ${it.title}: filtered, could not find patch label`)
+                    if(erDependabot && !isPatch){
+                      console.log(`${it.number} - ${it.title}: filtered, could not find patch label for dependabot PR`)
+                      return false;
                     }
-                    return isPatch;
+                    return true;
                 })
                 .map((it) => {
                     return {
