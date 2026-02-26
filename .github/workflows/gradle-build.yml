@@ -76,7 +76,7 @@ jobs:
         run: '${{ inputs.generate-openapi-command }}'
         env:
           GITHUB_PASSWORD: ${{ secrets.READER_TOKEN }}
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         id: artifact-upload-step
         if: ${{ inputs.publish-typescript == true }}
         with:
@@ -123,7 +123,7 @@ jobs:
 
       - name: Store reports
         if: failure()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: reports
           path: |
