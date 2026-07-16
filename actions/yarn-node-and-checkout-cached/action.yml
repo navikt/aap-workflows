@@ -1,7 +1,7 @@
 name: "Installs node, installs yarn dependencies with chache"
 
 inputs:
-  NPM_AUTH_TOKEN:
+  NODE_AUTH_TOKEN:
     required: true
     type: string
 
@@ -19,7 +19,7 @@ runs:
         cache: yarn
     - id: set-env
       shell: bash
-      run: echo "NPM_AUTH_TOKEN=${{ inputs.NPM_AUTH_TOKEN }}" >> $GITHUB_ENV
+      run: echo "NODE_AUTH_TOKEN=${{ inputs.NODE_AUTH_TOKEN }}" >> $GITHUB_ENV
     - id: yarn-install
       shell: bash
       run: yarn --immutable
