@@ -1,4 +1,4 @@
-name: Update dependabot config (Frontend Next)
+name: Update dependabot config (Gradle)
 
 on:
   workflow_call:
@@ -23,21 +23,20 @@ jobs:
       - name: check diff
         id: check-diff
         run: |
-          DIFF_STATUS="$(cmp --silent ./my-repo/.github/dependabot.yml ./aap-workflows/.github/workflows/dependabot-frontend-next.yml; echo $?)"
+          DIFF_STATUS="$(cmp --silent ./my-repo/.github/dependabot.yml ./aap-workflows/.github/workflows/dependabot-gradle.yml; echo $?)"
           echo "Files differ: $DIFF_STATUS"
           echo "DIFF_STATUS=$DIFF_STATUS" >> $GITHUB_ENV
       - if: env.DIFF_STATUS != 0
         run: |
           cd my-repo
-          gh pr list --state open --search ":arrow_up: Dependabot config in:title" --json number --jq '.[].number' | xargs -I{} gh pr close {} --comment "Lukker til fordel for ny oppdatering"
           git config --global user.email "aap-dependabot-updater@nav.no"
           git config --global user.name "AAP felles dependabot config sync"
           BRANCH_NAME="dependabot-config-update-$(date +"%Y%m%d%H%M%S")"
-          git checkout -b "$BRANCH_NAME" 
-          cp -f ../aap-workflows/.github/workflows/dependabot-frontend-next.yml ./.github/dependabot.yml 
+          git checkout -b "$BRANCH_NAME"
+          cp -f ../aap-workflows/.github/workflows/dependabot-gradle.yml ./.github/dependabot.yml
           git add .
           git commit -m "oppdatert dependabot config"
           git push origin HEAD
-          gh pr create --head "$BRANCH_NAME" --title ":arrow_up: Dependabot config" --body "Ny config hentet fra navikt/aap-workflows dependabot-frontend-next.yml"
+          gh pr create --head "$BRANCH_NAME" --title ":arrow_up: Dependabot config" --body "Ny config hentet fra navikt/aap-workflows dependabot-gradle.yml"
         env:
           GH_TOKEN: ${{ secrets.github_token }}
