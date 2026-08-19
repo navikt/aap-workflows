@@ -31,6 +31,14 @@ jobs:
           cd my-repo
           git config --global user.email "aap-dependabot-updater@nav.no"
           git config --global user.name "AAP felles dependabot config sync"
+
+          # Close any existing open PR for this config update before opening a new one
+          EXISTING_PRS="$(gh pr list --state open --search "in:title \":arrow_up: Dependabot config\"" --json number --jq '.[].number')"
+          for PR_NUMBER in $EXISTING_PRS; do
+            echo "Closing existing PR #$PR_NUMBER"
+            gh pr close "$PR_NUMBER" --delete-branch --comment "Lukkes til fordel for en ny PR med oppdatert dependabot config."
+          done
+
           BRANCH_NAME="dependabot-config-update-$(date +"%Y%m%d%H%M%S")"
           git checkout -b "$BRANCH_NAME"
           cp -f ../aap-workflows/.github/workflows/dependabot-gradle.yml ./.github/dependabot.yml
