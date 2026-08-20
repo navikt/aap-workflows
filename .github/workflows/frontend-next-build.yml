@@ -101,6 +101,7 @@ jobs:
         if: ${{ inputs.playwright == true }}
 
       - uses: nais/docker-build-push@v0
+        id: docker-build-push
         with:
           team: aap
           image_suffix: ${{ inputs.cluster }}
