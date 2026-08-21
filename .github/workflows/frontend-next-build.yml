@@ -27,11 +27,17 @@ on:
         required: false
         type: string
         description: Env variables to be added to .env.local (e.g. "MY_SECRET=secret"). Can be created in build actions and passed, eg a timestamp of build time
+    outputs:
+      image:
+        description: "Docker image that was built and pushed"
+        value: ${{ jobs.build.outputs.image }}
 
 jobs:
   build:
     name: build
     runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.docker-build-push.outputs.image }}
     env:
       NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
       SKIP_YARN_COREPACK_CHECK: true
