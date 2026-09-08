@@ -48,14 +48,14 @@ jobs:
       actions: read
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
-      - uses: actions/setup-java@v6.0.0
+      - uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c # v6.0.0
         with:
           java-version: ${{ inputs.jdk }}
           distribution: "temurin"
 
-      - uses: gradle/actions/setup-gradle@v6.3.0
+      - uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb # v6.3.0
         with:
           # Generate and submit a dependency graph (transitive dependencies)
           dependency-graph: generate-and-submit
@@ -76,21 +76,21 @@ jobs:
         run: '${{ inputs.generate-openapi-command }}'
         env:
           GITHUB_PASSWORD: ${{ secrets.READER_TOKEN }}
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         id: artifact-upload-step
         if: ${{ inputs.publish-typescript == true }}
         with:
           name: openapi
           path: ./openapi.json
           overwrite: "true"
-      - uses: navikt/github-app-token-generator@v1
+      - uses: navikt/github-app-token-generator@b96ff604b2300989cd1105e3fad09199fca56681 # v1
         id: get-token
         if: ${{ inputs.publish-typescript == true }}
         with:
           app-id: "${{ secrets.TEAM_AAP_GITHUB_APP_ID }}"
           private-key: "${{ secrets.TEAM_AAP_GITHUB_APP_PRIVATE_KEY }}"
           repo: navikt/aap-backend-typescript-types
-      - uses: actions/github-script@v9
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         if: ${{ inputs.publish-typescript == true }}
         with:
           github-token: ${{ steps.get-token.outputs.token }}
@@ -107,7 +107,7 @@ jobs:
                     'with-enums': ${{ inputs.typescript-enums }}
                 }
               })
-      - uses: dorny/test-reporter@v3.0.0
+      - uses: dorny/test-reporter@a43b3a5f7366b97d083190328d2c652e1a8b6aa2 # v3.0.0
         if: success() || failure()
         with:
           name: test
@@ -116,14 +116,14 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish Test Report
-        uses: mikepenz/action-junit-report@v6
+        uses: mikepenz/action-junit-report@a9170d5795813c01ab4901ffb045b52bab4ab09d # v6
         if: success() || failure() # always run even if the previous step fails
         with:
           report_paths: '**/build/test-results/test/TEST-*.xml'
 
       - name: Store reports
         if: failure()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: reports
           path: |
@@ -131,7 +131,7 @@ jobs:
             **/build/test-results/
             **/build/test-logs/
 
-      - uses: nais/docker-build-push@v0
+      - uses: nais/docker-build-push@0e73849f69ff260ee27597553c0a7848ca4e9795 # v0
         env: # Workaround for rate limiting inntil denne er fikset: https://github.com/aquasecurity/trivy-action/issues/389
           TRIVY_JAVA_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-java-db:1"
         with:

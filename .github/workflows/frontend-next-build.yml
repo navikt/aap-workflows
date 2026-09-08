@@ -42,8 +42,8 @@ jobs:
       NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
       SKIP_YARN_COREPACK_CHECK: true
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: 24
           registry-url: https://npm.pkg.github.com
@@ -54,7 +54,7 @@ jobs:
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: yarn install --immutable
       - name: Cache Next.js build cache
-        uses: actions/cache@v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: ${{ github.workspace }}/.next/cache
           # Generate a new cache whenever packages or source files change.
@@ -78,7 +78,7 @@ jobs:
         run: yarn run build
 
       - name: Upload static files to NAV CDN
-        uses: nais/deploy/actions/cdn-upload/v2@master
+        uses: nais/deploy/actions/cdn-upload/v2@027a91857992525139798892f2804b0ca21f4af6 # master
         if: ${{ inputs.cdn == true }}
         with:
           team: aap
@@ -93,7 +93,7 @@ jobs:
 
       - name: Cache playwright browsers
         id: cache-playwright-browsers
-        uses: actions/cache@v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: ~/.cache/ms-playwright
           key: playwright-browsers-${{ env.PLAYWRIGHT_VERSION }}
@@ -106,7 +106,7 @@ jobs:
         run: yarn playwright test
         if: ${{ inputs.playwright == true }}
 
-      - uses: nais/docker-build-push@v0
+      - uses: nais/docker-build-push@0e73849f69ff260ee27597553c0a7848ca4e9795 # v0
         id: docker-build-push
         with:
           team: aap
