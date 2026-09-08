@@ -18,4 +18,5 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           labels-for-pr: digestabot
+          title-for-pr: "AAP-BAU Digestabot"
           team: aap
