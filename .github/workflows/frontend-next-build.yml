@@ -78,7 +78,7 @@ jobs:
         run: yarn run build
 
       - name: Upload static files to NAV CDN
-        uses: nais/deploy/actions/cdn-upload/v2@1de80da70ad26556ecdc5964a8b7ec3bbed98120 # master
+        uses: nais/deploy/actions/cdn-upload/v2@9850be311389ca754d9a9f2280615419d738c891 # master
         if: ${{ inputs.cdn == true }}
         with:
           team: aap
@@ -106,7 +106,7 @@ jobs:
         run: yarn playwright test
         if: ${{ inputs.playwright == true }}
 
-      - uses: nais/docker-build-push@0e73849f69ff260ee27597553c0a7848ca4e9795 # v0
+      - uses: nais/docker-build-push@423a915c9b72edf2ba848b88171ccb0489e2a40a # v0
         id: docker-build-push
         with:
           team: aap
