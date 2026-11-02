@@ -15,7 +15,7 @@ runs:
     - uses: actions/setup-node@v4
       id: setup-node
       with:
-        node-version: 22.x
+        node-version: 26.x
         cache: yarn
     - id: set-env
       shell: bash
