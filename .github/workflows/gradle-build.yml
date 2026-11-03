@@ -65,6 +65,9 @@ jobs:
           # Some parallell cache operations will be disabled when debug is enabled
           GRADLE_BUILD_ACTION_CACHE_DEBUG_ENABLED: ${{ inputs.debug }}
 
+      - name: Generate and submit dependency graph
+        uses: gradle/actions/dependency-submission@v6
+
       - run: ./gradlew test app:buildFatJar --continue
         env:
           GITHUB_PASSWORD: ${{ secrets.READER_TOKEN }}
