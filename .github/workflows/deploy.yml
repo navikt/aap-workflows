@@ -38,7 +38,7 @@ jobs:
         id: login
         with:
           team: aap
-      - uses: nais/deploy/actions/deploy@7b60caaded00332e9aa117a8342daa0876851dfe # v2
+      - uses: nais/deploy/actions/deploy@6a9dcd6df697ec2d38edc78cadb0b9acd1232f50 # v3
         env:
           PRINT_PAYLOAD: true
           CLUSTER: ${{ inputs.cluster }}
