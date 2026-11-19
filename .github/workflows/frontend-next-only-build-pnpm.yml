@@ -27,7 +27,8 @@ jobs:
     name: build
     runs-on: ubuntu-latest
     env:
-      NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+      # Nødvendig for å koble til Navikt GPR. Erstatter gammelt oppsett for NODE_AUTH_TOKEN.
+      pnpm_config__auth: '{"https://npm.pkg.github.com":{"@navikt":{"authToken":"${{ secrets.READER_TOKEN }}"}}}'
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: pnpm/setup@fa36a5ef7dcdefc3a7cb25655c122e00cf6e636e
