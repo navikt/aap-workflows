@@ -1,0 +1,67 @@
+name: frontend-next-only-build-pnpm
+
+on:
+  workflow_call:
+    inputs:
+      cluster:
+        required: true
+        type: string
+        description: Cluster name
+      dynamicenv:
+        required: false
+        type: string
+        description: Env variables to be added to .env.local (e.g. "MY_SECRET=secret"). Can be created in build actions and passed, eg a timestamp of build time
+      playwright:
+        required: false
+        default: false
+        type: boolean
+        description: Run playwright tests
+      linting:
+        required: false
+        default: false
+        type: boolean
+        description: Run linting
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: pnpm/setup@fa36a5ef7dcdefc3a7cb25655c122e00cf6e636e
+        with:
+          runtime: node@26
+          cache: true
+          install: false
+          cache-dependency-path: pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Cache Next.js build cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        with:
+          path: ${{ github.workspace }}/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml', '**/pnpm-workspace.yaml') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml', '**/pnpm-workspace.yaml') }}-
+      - name: Copy env-file
+        run: cp .nais/${{ inputs.cluster }}.env .env
+      - name: Copy env passed in github actions (Do not use for secrets)
+        if: ${{ inputs.dynamicenv != '' }}
+        run: echo  ${{inputs.dynamicenv}} >> .env.local
+      - name: typecheck
+        run: pnpm exec tsc
+      - name: run tests
+        run: pnpm test
+      - name: run linting
+        if: ${{ inputs.linting == true }}
+        run: pnpm run lint
+      - name: run build
+        run: pnpm run build
+      - name: Install Playwright Browsers
+        if: ${{ inputs.playwright == true }}
+        run: pnpm exec playwright install chromium --with-deps
+      - name: Run Playwright tests
+        if: ${{ inputs.playwright == true }}
+        run: pnpm exec playwright test
