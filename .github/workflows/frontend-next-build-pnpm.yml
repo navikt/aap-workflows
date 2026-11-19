@@ -1,0 +1,110 @@
+name: frontend-next-build-pnpm
+
+on:
+  workflow_call:
+    inputs:
+      cluster:
+        required: true
+        type: string
+        description: Cluster name
+      playwright:
+        required: true
+        type: boolean
+        description: Run playwright tests
+      cdn:
+        required: true
+        type: boolean
+        description: Upload static files to NAV CDN
+      appname:
+        required: true
+        type: string
+        description: App name
+      appsecrets:
+        required: false
+        type: string
+        description: App secrets to be converted to .env.local (e.g. "MY_SECRET=secret"), can use multiline string
+      dynamicenv:
+        required: false
+        type: string
+        description: Env variables to be added to .env.local (e.g. "MY_SECRET=secret"). Can be created in build actions and passed, eg a timestamp of build time
+    outputs:
+      image:
+        description: "Docker image that was built and pushed"
+        value: ${{ jobs.build.outputs.image }}
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.docker-build-push.outputs.image }}
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: pnpm/setup@fa36a5ef7dcdefc3a7cb25655c122e00cf6e636e
+        with:
+          runtime: node@26
+          cache: true
+          install: false
+          cache-dependency-path: pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Cache Next.js build cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        with:
+          path: ${{ github.workspace }}/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml', '**/pnpm-workspace.yaml') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml', '**/pnpm-workspace.yaml') }}-
+      - name: Copy env-file
+        run: cp .nais/${{ inputs.cluster }}.env .env
+      - name: Copy environment variables to env-file
+        if: ${{ inputs.appsecrets != '' }}
+        run: echo  ${{inputs.appsecrets}}=${{secrets[inputs.appsecrets]}} >> .env.local
+      - name: Copy env passed in github actions (Do not use for secrets)
+        if: ${{ inputs.dynamicenv != '' }}
+        run: echo  ${{inputs.dynamicenv}} >> .env.local
+      - name: typesjekking
+        run: pnpm exec tsc
+      - name: run tests
+        run: pnpm test
+      - name: run build
+        run: pnpm run build
+
+      - name: Upload static files to NAV CDN
+        uses: nais/deploy/actions/cdn-upload/v2@b1a9a40dae937091497f8f29c5ea5334cc1c0643 # master
+        if: ${{ inputs.cdn == true }}
+        with:
+          team: aap
+          source: ./.next/static
+          destination: /${{ inputs.appname }}/_next
+
+      - name: Get Playwright version
+        if: ${{ inputs.playwright == true }}
+        run: |
+          PLAYWRIGHT_VERSION=$(pnpm exec node -p "require('@playwright/test/package.json').version")
+          echo "Playwright's Version: $PLAYWRIGHT_VERSION"
+          echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_ENV
+
+      - name: Cache playwright browsers
+        if: ${{ inputs.playwright == true }}
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-browsers-${{ env.PLAYWRIGHT_VERSION }}
+
+      - name: Install Playwright Browsers
+        if: ${{ inputs.playwright == true }}
+        run: pnpm exec playwright install chromium --with-deps
+
+      - name: Run Playwright tests
+        if: ${{ inputs.playwright == true }}
+        run: pnpm exec playwright test
+
+      - uses: nais/docker-build-push@bfbdd06e303c63a7d697da6f391ffc6b81f60db2 # v0
+        id: docker-build-push
+        with:
+          team: aap
+          image_suffix: ${{ inputs.cluster }}
+          tag: ${{ github.sha }}
