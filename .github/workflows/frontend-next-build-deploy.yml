@@ -1,0 +1,199 @@
+name: frontend-next-build-deploy
+
+on:
+  workflow_call:
+    inputs:
+      appname:
+        required: true
+        type: string
+        description: App name
+      dev-manifest:
+        required: false
+        type: string
+        default: .nais/dev-gcp.yaml
+        description: NAIS Application resource manifest for dev
+      prod-manifest:
+        required: false
+        type: string
+        default: .nais/prod-gcp.yaml
+        description: NAIS Application resource manifest for prod
+      cdn:
+        required: false
+        type: boolean
+        default: false
+        description: Upload static files to NAV CDN
+
+permissions:
+  contents: read
+  packages: read
+
+env:
+  NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+  SKIP_YARN_COREPACK_CHECK: true
+
+jobs:
+  verify:
+    name: Lint and typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: 26
+          registry-url: https://npm.pkg.github.com
+          cache: yarn
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Typecheck
+        run: yarn tsc
+
+      - name: Build without publishing
+        if: ${{ github.event_name != 'push' || github.ref != 'refs/heads/main' }}
+        run: yarn run build
+
+  tests:
+    name: Tests (shard ${{ matrix.shardIndex }}/${{ strategy.job-total }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shardIndex: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: 26
+          registry-url: https://npm.pkg.github.com
+          cache: yarn
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Run tests
+        run: yarn test --reporter=blob --shard=${{ matrix.shardIndex }}/${{ strategy.job-total }}
+
+      - name: Upload blob report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: blob-report-${{ matrix.shardIndex }}
+          path: .vitest-reports/*
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 1
+
+  merge-reports:
+    name: Merge test reports
+    if: ${{ !cancelled() }}
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: 26
+          registry-url: https://npm.pkg.github.com
+          cache: yarn
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Download blob reports
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          path: .vitest-reports
+          pattern: blob-report-*
+          merge-multiple: true
+
+      - name: Merge reports
+        run: yarn vitest --merge-reports
+
+  build:
+    needs: [verify, tests, merge-reports]
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        cluster: [dev-gcp, prod-gcp]
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: 26
+          registry-url: https://npm.pkg.github.com
+          cache: yarn
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Cache Next.js build cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        with:
+          path: ${{ github.workspace }}/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ matrix.cluster }}-${{ hashFiles('yarn.lock') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ matrix.cluster }}-${{ hashFiles('yarn.lock') }}-
+
+      - name: Copy env-file
+        run: cp ".nais/${{ matrix.cluster }}.env" .env
+
+      - name: Build
+        run: yarn run build
+
+      - name: Upload static files to NAV CDN
+        if: ${{ inputs.cdn }}
+        uses: nais/deploy/actions/cdn-upload/v2@427e29c94d911626a023a76f402f6dcae1f840b7 # master
+        with:
+          team: aap
+          source: ./.next/static
+          destination: /${{ inputs.appname }}/_next
+
+      - uses: nais/docker-build-push@588f76a6f45aeb1e75d5e8417ec6ef6d79b2b39f # v0
+        with:
+          team: aap
+          image_suffix: ${{ matrix.cluster }}
+          tag: ${{ github.sha }}
+
+  deployDev:
+    needs: build
+    uses: ./.github/workflows/deploy.yml
+    permissions:
+      contents: read
+      id-token: write
+    with:
+      cluster: dev-gcp
+      manifest: ${{ inputs.dev-manifest }}
+      imageSuffix: -dev-gcp
+
+  deployProd:
+    needs: [build, deployDev]
+    uses: ./.github/workflows/deploy.yml
+    permissions:
+      contents: read
+      id-token: write
+    with:
+      cluster: prod-gcp
+      manifest: ${{ inputs.prod-manifest }}
+      imageSuffix: -prod-gcp
