@@ -1,4 +1,4 @@
-name: frontend-next-build-deploy
+name: frontend-next-sharded-build
 
 on:
   workflow_call:
@@ -7,16 +7,6 @@ on:
         required: true
         type: string
         description: App name
-      dev-manifest:
-        required: false
-        type: string
-        default: .nais/dev-gcp.yaml
-        description: NAIS Application resource manifest for dev
-      prod-manifest:
-        required: false
-        type: string
-        default: .nais/prod-gcp.yaml
-        description: NAIS Application resource manifest for prod
       cdn:
         required: false
         type: boolean
@@ -176,24 +166,3 @@ jobs:
           image_suffix: ${{ matrix.cluster }}
           tag: ${{ github.sha }}
 
-  deployDev:
-    needs: build
-    uses: ./.github/workflows/deploy.yml
-    permissions:
-      contents: read
-      id-token: write
-    with:
-      cluster: dev-gcp
-      manifest: ${{ inputs.dev-manifest }}
-      imageSuffix: -dev-gcp
-
-  deployProd:
-    needs: [build, deployDev]
-    uses: ./.github/workflows/deploy.yml
-    permissions:
-      contents: read
-      id-token: write
-    with:
-      cluster: prod-gcp
-      manifest: ${{ inputs.prod-manifest }}
-      imageSuffix: -prod-gcp
